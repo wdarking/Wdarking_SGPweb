@@ -1,0 +1,99 @@
+<?xml version="1.0"?>
+<config>
+  <modules>
+    <Wdarking_SGPweb>
+      <version>0.1.0</version>
+    </Wdarking_SGPweb>
+  </modules>
+  <global>
+    <helpers>
+      <sgpweb>
+        <class>Wdarking_SGPweb_Helper</class>
+      </sgpweb>
+    </helpers>
+	<blocks>
+	  <sgpweb>
+		<class>Wdarking_SGPweb_Block</class>
+	  </sgpweb>
+	</blocks>
+	<models>
+	  <sgpweb>
+		<class>Wdarking_SGPweb_Model</class>
+		<resourceModel>sgpweb_mysql4</resourceModel>
+	  </sgpweb>
+	</models>
+    <events>
+	  <sales_order_invoice_pay> <!-- identifier of the event we want to catch -->
+        <observers>
+          <sales_order_invoice_pay_handler> <!-- identifier of the event handler -->
+            <type>model</type> <!-- class method call type; valid are model, object and singleton -->
+            <class>sgpweb/observer</class> <!-- observers class alias -->
+            <method>salesOrderInvoicePay</method>  <!-- observer's method to be called -->
+            <args></args> <!-- additional arguments passed to observer -->
+          </sales_order_invoice_pay_handler>
+        </observers>
+      </sales_order_invoice_pay>
+    </events>
+  </global>
+  <admin>
+	<routers>
+	  <sgpweb>
+	    <use>admin</use>
+		<args>
+		  <module>Wdarking_SGPweb</module>
+		  <frontName>admin_sgpweb</frontName>
+		</args>
+	  </sgpweb>
+	</routers>
+  </admin>
+  <adminhtml>
+	<menu>
+	  <sgpweb module="sgpweb">
+		<title>SGPweb</title>
+		<sort_order>100</sort_order>
+		<children>
+		  <sgpwebbackend module="sgpweb">
+			<title>SGPweb PLP</title>
+			<sort_order>0</sort_order>
+			<action>admin_sgpweb/adminhtml_sgpwebbackend</action>
+		  </sgpwebbackend>
+		</children>
+	  </sgpweb>
+	</menu>
+	<acl>
+	  <resources>
+		<all>
+		  <title>Allow Everything</title>
+		</all>
+		<admin>
+		  <children>
+			<sgpweb translate="title" module="sgpweb">
+			  <title>SGPweb</title>
+			  <sort_order>1000</sort_order>
+			  <children>
+		  <sgpwebbackend translate="title">
+			<title>SGPweb PLP</title>
+		  </sgpwebbackend>
+			  </children>
+			</sgpweb>
+		  </children>
+		</admin>
+	  </resources>
+	</acl>
+	<layout>
+	  <updates>
+		<sgpweb>
+		  <file>sgpweb.xml</file>
+		</sgpweb>
+	  </updates>
+	</layout>
+  </adminhtml>    
+    <crontab>
+        <jobs>            
+			<sgpweb_checksgpitemstatus>
+                <schedule><cron_expr>*/5 * * * *</cron_expr></schedule>
+                <run><model>sgpweb/cron::checkSgpItemStatus</model></run>
+            </sgpweb_checksgpitemstatus>
+        </jobs>
+    </crontab>
+</config> 
