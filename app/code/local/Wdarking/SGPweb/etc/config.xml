@@ -23,19 +23,19 @@
 	  </sgpweb>
 	</models>
     <events>
-	  <sales_order_invoice_pay> <!-- identifier of the event we want to catch -->
+	  <sales_order_shipment_save_before> <!-- identifier of the event we want to catch -->
         <observers>
-          <sales_order_invoice_pay_handler> <!-- identifier of the event handler -->
+          <sales_order_shipment_save_before_handler> <!-- identifier of the event handler -->
             <type>model</type> <!-- class method call type; valid are model, object and singleton -->
             <class>sgpweb/observer</class> <!-- observers class alias -->
-            <method>salesOrderInvoicePay</method>  <!-- observer's method to be called -->
+            <method>salesOrderShipmentSaveBefore</method>  <!-- observer's method to be called -->
             <args></args> <!-- additional arguments passed to observer -->
-          </sales_order_invoice_pay_handler>
+          </sales_order_shipment_save_before_handler>
         </observers>
-      </sales_order_invoice_pay>
+      </sales_order_shipment_save_before>
     </events>
   </global>
-  <admin>
+  <!-- <admin>
 	<routers>
 	  <sgpweb>
 	    <use>admin</use>
@@ -45,8 +45,8 @@
 		</args>
 	  </sgpweb>
 	</routers>
-  </admin>
-  <adminhtml>
+  </admin> -->
+  <!-- <adminhtml>
 	<menu>
 	  <sgpweb module="sgpweb">
 		<title>SGPweb</title>
@@ -87,13 +87,13 @@
 		</sgpweb>
 	  </updates>
 	</layout>
-  </adminhtml>    
+  </adminhtml> -->
     <crontab>
-        <jobs>            
+        <jobs>
 			<sgpweb_checksgpitemstatus>
                 <schedule><cron_expr>*/5 * * * *</cron_expr></schedule>
                 <run><model>sgpweb/cron::checkSgpItemStatus</model></run>
             </sgpweb_checksgpitemstatus>
         </jobs>
     </crontab>
-</config> 
+</config>
