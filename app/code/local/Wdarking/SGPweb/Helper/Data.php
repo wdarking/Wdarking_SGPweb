@@ -25,19 +25,18 @@ class Wdarking_SGPweb_Helper_Data extends Mage_Core_Helper_Abstract
 
     public function getSgpRemapped() {
 
-        $configValue = Mage::getStoreConfig('wdarking_sgpweb/wdk_sgpweb_config/wdk_sgpweb_remethods');
+        $configValue = Mage::getStoreConfig('wdarking_sgpweb/wdk_sgpweb_config/wdk_sgpweb_remapshipping');
 
-        Mage::log($configValue);
-        if ($configValue) {
-            $remaps = explode('|', trim($configValue));
-            $remapped = [];
-            foreach ($remaps as $remapString) {
-                $methods = explode(',', $remapString);
-                if (count($methods) !== 2) {
-                    Mage::log('Invalid method string');
-                    return false;
+        if (strlen($configValue)) {
+            $configValue = unserialize($configValue);
+        }
+
+        if (count($configValue)) {
+            $remaps = $configValue;
+            foreach ($remaps as $remap) {
+                if (isset($remap['shipping_method'], $remap['sgp_method'])) {
+                    $remapped[$remap['shipping_method']] = $remap['sgp_method'];
                 }
-                $remapped[$methods[0]] = $methods[1];
             }
             return $remapped;
         }
@@ -48,7 +47,6 @@ class Wdarking_SGPweb_Helper_Data extends Mage_Core_Helper_Abstract
     public function parseSgpMethod($method)
     {
         $sgpRemapped = $this->getSgpRemapped();
-        Mage::log($sgpRemapped);
 
         if (array_key_exists($method, $sgpRemapped)) {
             return $sgpRemapped[$method];

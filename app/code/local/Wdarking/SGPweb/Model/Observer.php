@@ -101,7 +101,6 @@ class Wdarking_SGPweb_Model_Observer
         }
 
         $url = "https://www.sgpweb.com.br/novo/api/pre-postagem?chave_integracao={$token}";
-        Mage::log($url);
 
         //Initiate cURL.
         $ch = curl_init($url);
@@ -111,8 +110,6 @@ class Wdarking_SGPweb_Model_Observer
 
         //Encode the array into JSON.
         $jsonDataEncoded = "{ \"objetos\": [{$jsonData}] }";
-
-        Mage::log($jsonDataEncoded);
 
         // 10 seconds start connection
         curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 10);
@@ -134,8 +131,6 @@ class Wdarking_SGPweb_Model_Observer
 
         //Execute the request
         $result = curl_exec($ch);
-
-        Mage::log($result);
 
         if($result === false) {
             throw new \Exception("Error Processing Request: ".curl_errno($ch), 1);
