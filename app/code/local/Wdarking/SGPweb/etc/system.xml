@@ -1,24 +1,24 @@
 <?xml version="1.0"?>
 <config>
-	  <sections>
-		<wdarking_sgpweb  translate="label" module="sgpweb">
-		<label>SGPweb</label>
-		<tab>wdarking</tab>
-		<frontend_type>text</frontend_type>
-		<sort_order>0</sort_order>
-		<show_in_default>1</show_in_default>
-		<show_in_website>1</show_in_website>
-		<show_in_store>1</show_in_store>
-					<groups>
-				      <wdk_sgpweb_config translate="label">
-					  <label>Configuration</label>
-					  <frontend_type>text</frontend_type>
-					  <sort_order>0</sort_order>
-					  <show_in_default>1</show_in_default>
-					  <show_in_website>1</show_in_website>
-					  <show_in_store>1</show_in_store>
-				       <fields>
-                          <wdk_sgpweb_enabled translate="label">
+    <sections>
+        <wdarking_sgpweb translate="label" module="sgpweb">
+            <label>SGPweb</label>
+            <tab>wdarking</tab>
+            <frontend_type>text</frontend_type>
+            <sort_order>0</sort_order>
+            <show_in_default>1</show_in_default>
+            <show_in_website>1</show_in_website>
+            <show_in_store>1</show_in_store>
+            <groups>
+                <wdk_sgpweb_config translate="label">
+                    <label>Configuration</label>
+                    <frontend_type>text</frontend_type>
+                    <sort_order>0</sort_order>
+                    <show_in_default>1</show_in_default>
+                    <show_in_website>1</show_in_website>
+                    <show_in_store>1</show_in_store>
+                    <fields>
+                        <wdk_sgpweb_enabled translate="label">
                             <label>Enabled</label>
                             <frontend_type>select</frontend_type>
                             <source_model>adminhtml/system_config_source_yesno</source_model>
@@ -26,28 +26,145 @@
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>
                             <show_in_store>1</show_in_store>
-                          </wdk_sgpweb_enabled>
-                            <wdk_sgpweb_webstoken translate="label">
-                              <label>Webservice Token</label>
-                              <frontend_type>text</frontend_type>
-                              <sort_order>0</sort_order>
-                              <show_in_default>1</show_in_default>
-                              <show_in_website>1</show_in_website>
-                              <show_in_store>1</show_in_store>
-                            </wdk_sgpweb_webstoken>
-                          <wdk_sgpweb_remapshipping translate="label">
+                        </wdk_sgpweb_enabled>
+                        <wdk_sgpweb_webstoken translate="label">
+                            <label>Webservice Token</label>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>0</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </wdk_sgpweb_webstoken>
+                        <wdk_sgpweb_remapshipping translate="label">
                             <label>Shipping SGP Remap</label>
-							<frontend_model>sgpweb/config_form_field_remapShipping</frontend_model>
+                            <frontend_model>sgpweb/config_form_field_remapShipping</frontend_model>
                             <backend_model>adminhtml/system_config_backend_serialized_array</backend_model>
                             <sort_order>0</sort_order>
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>
                             <show_in_store>1</show_in_store>
-							<comment>Remap current shipping methods to custom sgp web shipping methods</comment>
-                          </wdk_sgpweb_remapshipping>
-					   </fields>
-					   </wdk_sgpweb_config>
-					</groups>
-		</wdarking_sgpweb>
-	  </sections>
+                            <comment>Remap current shipping methods to custom sgp web shipping methods</comment>
+                        </wdk_sgpweb_remapshipping>
+                    </fields>
+                </wdk_sgpweb_config>
+            </groups>
+        </wdarking_sgpweb>
+        <carriers>
+            <groups>
+                <wdarking_sgpweb>
+                    <label>SGPweb</label>
+                    <frontend_type>text</frontend_type>
+                    <sort_order>1</sort_order>
+                    <show_in_default>1</show_in_default>
+                    <show_in_website>1</show_in_website>
+                    <show_in_store>1</show_in_store>
+                    <comment>
+                        <![CDATA[
+                            <div>
+                                <h3>Informações Importantes</h3>
+                                <p>Para reportar bugs ou sugerir melhorias, por favor use o <a href="https://github.com/wdarking/Wdarking_SGPweb" target="_blank">GitHub</a>.</p>
+                                <p>Lembre-se de configurar as "Definições de Envio" no menu ao lado esquerdo.</p>
+                                <p>Este módulo foi desenvolvido conforme as especificações descritas na documentação do SGPweb descritas <a href="http://wiki.sgpweb.com.br/index.php/1.DOCUMENTACAO_INTEGRACAO_SGPWEB">aqui</a>.</p>
+                                <br />
+                                <hr />
+                                <br />
+                            </div>
+                        ]]>
+                    </comment>
+                    <fields>
+                        <active translate="label">
+                            <label>Habilitar</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>adminhtml/system_config_source_yesno</source_model>
+                            <sort_order>10</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>0</show_in_store>
+                        </active>
+                        <title translate="label">
+                            <label>Título</label>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>20</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>0</show_in_store>
+                        </title>
+                        <allowed_methods translate="label">
+                            <label>Allowed Methods</label>
+                            <frontend_type>multiselect</frontend_type>
+                            <source_model>Wdarking_SGPweb_Model_Source_CarrierMethods</source_model>
+                            <sort_order>150</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>0</show_in_store>
+                            <can_be_empty>1</can_be_empty>
+                        </allowed_methods>
+                        <include_virtual_price translate="label">
+                            <label>Include Virtual Products in Price Calculation</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>adminhtml/system_config_source_yesno</source_model>
+                            <sort_order>200</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>0</show_in_store>
+                        </include_virtual_price>
+                        <sallowspecific translate="label">
+                            <label>Ship to Applicable Countries</label>
+                            <frontend_type>select</frontend_type>
+                            <sort_order>210</sort_order>
+                            <frontend_class>shipping-applicable-country</frontend_class>
+                            <source_model>adminhtml/system_config_source_shipping_allspecificcountries</source_model>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>0</show_in_store>
+                        </sallowspecific>
+                        <specificcountry translate="label">
+                            <label>Ship to Specific Countries</label>
+                            <frontend_type>multiselect</frontend_type>
+                            <sort_order>220</sort_order>
+                            <source_model>adminhtml/system_config_source_country</source_model>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>0</show_in_store>
+                            <can_be_empty>1</can_be_empty>
+                        </specificcountry>
+                        <debug translate="label">
+                            <label>Debug</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>adminhtml/system_config_source_yesno</source_model>
+                            <sort_order>290</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>0</show_in_store>
+                        </debug>
+                        <showmethod translate="label">
+                            <label>Show Method if Not Applicable</label>
+                            <frontend_type>select</frontend_type>
+                            <sort_order>300</sort_order>
+                            <source_model>adminhtml/system_config_source_yesno</source_model>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>0</show_in_store>
+                        </showmethod>
+                        <specificerrmsg translate="label">
+                            <label>Displayed Error Message</label>
+                            <frontend_type>textarea</frontend_type>
+                            <sort_order>310</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>0</show_in_store>
+                        </specificerrmsg>
+                        <sort_order translate="label">
+                            <label>Sort Order</label>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>320</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>0</show_in_store>
+                        </sort_order>
+                    </fields>
+                </wdarking_sgpweb>
+            </groups>
+        </carriers>
+    </sections>
 </config>

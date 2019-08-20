@@ -54,4 +54,18 @@ class Wdarking_SGPweb_Helper_Data extends Mage_Core_Helper_Abstract
 
         return false;
     }
+
+    public function getSgpMethodTitle($sgpMethod)
+    {
+        $carrierMethods = new Wdarking_SGPweb_Model_Source_CarrierMethods();
+        $name = null;
+        foreach ($carrierMethods->getAllOptions() as $option) {
+            if ($sgpMethod['Codigo'] == $option['value']) {
+                $name = $option['label'];
+                break;
+            }
+        }
+        $shippingDelay = (int)$sgpMethod['PrazoEntrega'];
+        return Mage::helper('sgpweb')->__('%s - Em média %d dias.', $name, $shippingDelay);
+    }
 }
