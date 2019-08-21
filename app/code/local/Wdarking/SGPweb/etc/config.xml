@@ -21,7 +21,35 @@
                 <class>Wdarking_SGPweb_Model</class>
                 <resourceModel>sgpweb_mysql4</resourceModel>
             </sgpweb>
+            <sgpweb_mysql4>
+                <class>Wdarking_SGPweb_Model_Mysql4</class>
+                <entities>
+                    <sgpplp>
+                        <table>wdarking_sgpweb_plps</table>
+                    </sgpplp>
+                </entities>
+            </sgpweb_mysql4>
         </models>
+        <resources>
+            <wdarking_sgpweb_setup>
+                <setup>
+                    <module>Wdarking_SGPweb</module>
+                </setup>
+                <connection>
+                    <use>core_setup</use>
+                </connection>
+            </wdarking_sgpweb_setup>
+            <wdarking_sgpweb_write>
+                <connection>
+                    <use>core_write</use>
+                </connection>
+            </wdarking_sgpweb_write>
+            <wdarking_sgpweb_read>
+                <connection>
+                    <use>core_read</use>
+                </connection>
+            </wdarking_sgpweb_read>
+        </resources>
         <events>
             <sales_order_shipment_save_before>
                 <!-- identifier of the event we want to catch -->
@@ -41,59 +69,71 @@
             </sales_order_shipment_save_before>
         </events>
     </global>
-    <!-- <admin>
-    <routers>
-      <sgpweb>
-        <use>admin</use>
-        <args>
-          <module>Wdarking_SGPweb</module>
-          <frontName>admin_sgpweb</frontName>
-        </args>
-      </sgpweb>
-    </routers>
-  </admin> -->
-    <!-- <adminhtml>
-    <menu>
-      <sgpweb module="sgpweb">
-        <title>SGPweb</title>
-        <sort_order>100</sort_order>
-        <children>
-          <sgpwebbackend module="sgpweb">
-            <title>SGPweb PLP</title>
-            <sort_order>0</sort_order>
-            <action>admin_sgpweb/adminhtml_sgpwebbackend</action>
-          </sgpwebbackend>
-        </children>
-      </sgpweb>
-    </menu>
-    <acl>
-      <resources>
-        <all>
-          <title>Allow Everything</title>
-        </all>
-        <admin>
-          <children>
-            <sgpweb translate="title" module="sgpweb">
-              <title>SGPweb</title>
-              <sort_order>1000</sort_order>
-              <children>
-          <sgpwebbackend translate="title">
-            <title>SGPweb PLP</title>
-          </sgpwebbackend>
-              </children>
+    <admin>
+        <routers>
+            <sgpweb>
+                <use>admin</use>
+                <args>
+                    <module>Wdarking_SGPweb</module>
+                    <frontName>admin_sgpweb</frontName>
+                </args>
             </sgpweb>
-          </children>
-        </admin>
-      </resources>
-    </acl>
-    <layout>
-      <updates>
-        <sgpweb>
-          <file>sgpweb.xml</file>
-        </sgpweb>
-      </updates>
-    </layout>
-  </adminhtml> -->
+        </routers>
+    </admin>
+    <adminhtml>
+        <menu>
+            <sgpweb module="sgpweb">
+                <title>SGPweb</title>
+                <sort_order>100</sort_order>
+                <children>
+                    <sgpplp module="sgpweb">
+                        <title>Manage Sgpplp</title>
+                        <sort_order>0</sort_order>
+                        <action>admin_sgpweb/adminhtml_sgpplp</action>
+                    </sgpplp>
+                </children>
+            </sgpweb>
+        </menu>
+        <acl>
+            <resources>
+                <all>
+                    <title>Allow Everything</title>
+                </all>
+                <admin>
+                    <children>
+                        <sgpweb translate="title" module="sgpweb">
+                            <title>SGPweb</title>
+                            <sort_order>1000</sort_order>
+                            <children>
+                                <sgpplp translate="title">
+                                    <title>Manage Sgpplp</title>
+                                    <sort_order>0</sort_order>
+                                </sgpplp>
+                            </children>
+                        </sgpweb>
+                    </children>
+                </admin>
+            </resources>
+        </acl>
+        <layout>
+            <updates>
+                <sgpweb>
+                    <file>sgpweb.xml</file>
+                </sgpweb>
+            </updates>
+        </layout>
+    </adminhtml>
+    <frontend>
+        <routers>
+            <sgpweb>
+                <use>standard</use>
+                <args>
+                    <module>Wdarking_SGPweb</module>
+                    <frontName>sgpweb</frontName>
+                </args>
+            </sgpweb>
+        </routers>
+    </frontend>
     <crontab>
         <jobs>
             <sgpweb_checksgpitemstatus>

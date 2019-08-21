@@ -1,8 +1,8 @@
 <?xml version="1.0"?>
 <layout version="0.1.0">
-  <sgpweb_adminhtml_sgpwebbackend_index>
+  <sgpweb_adminhtml_sgpplp_index>
 	<reference name="content">
-	  <block type="sgpweb/adminhtml_sgpwebbackend" name="sgpwebbackend" template="sgpweb/sgpwebbackend.phtml"/>
+	  <block type="sgpweb/adminhtml_sgpplp" name="sgpplp" />
 	</reference>
-  </sgpweb_adminhtml_sgpwebbackend_index>
+  </sgpweb_adminhtml_sgpplp_index>
 </layout>
