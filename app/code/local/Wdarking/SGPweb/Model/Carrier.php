@@ -90,7 +90,7 @@ class Wdarking_SGPweb_Model_Carrier extends Mage_Shipping_Model_Carrier_Abstract
             $result = $sgp->fetchRates([
                 'cep_origem' => Mage::getStoreConfig('shipping/origin/postcode', $this->getStore()),
                 'cep_destino' => $request->getDestPostcode(),
-                'peso' => $request->getPackageWeight() / 1000,
+                'peso' => $this->getWeightInKilos($request),
                 'mao_propria' => 'N',
                 'aviso_recebimento' => 'N',
                 'servicos' => explode(',', $this->getConfigData('allowed_methods'))
@@ -166,6 +166,31 @@ class Wdarking_SGPweb_Model_Carrier extends Mage_Shipping_Model_Carrier_Abstract
         // }
 
         return false;
+    }
+
+    public function getWeightInKilos($request)
+    {
+        Mage::log('Wdarking_SGPweb_Model_Carrier::getWeightInKilos');
+
+        $weightType = $this->getConfigData('weight_type');
+
+        $weight = $request->getPackageWeight();
+
+        Mage::log($weight);
+
+        if ($wrapperWeight = $this->getConfigData('wrapper_weight')) {
+            $weight += $wrapperWeight;
+        }
+
+        Mage::log($weight);
+
+        if ($this->getConfigData('weight_type') == Wdarking_SGPweb_Model_Source_WeightType::WEIGHT_GR) {
+            $weight = $weight / 1000;
+        }
+
+        Mage::log($weight);
+
+        return $weight;
     }
 
     public function helper()

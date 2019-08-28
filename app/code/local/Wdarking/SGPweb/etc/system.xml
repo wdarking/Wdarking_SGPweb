@@ -89,6 +89,28 @@
                             <show_in_website>1</show_in_website>
                             <show_in_store>0</show_in_store>
                         </title>
+                        <weight_type translate="label">
+                            <label>Formato do Peso</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>Wdarking_SGPweb_Model_Source_WeightType</source_model>
+                            <sort_order>20</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <comment>Formato do peso dos produtos.</comment>
+                            <tooltip>O formato do peso irá implicar na maneira como o mesmo é cadastrado no produto, por
+                                exemplo, 1 Kg no formato "Kilo" será "1.000", já em "Gramas" será "1000.000".
+                            </tooltip>
+                        </weight_type>
+                        <wrapper_weight translate="label">
+                            <label>Peso da Embalagem</label>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>20</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>0</show_in_store>
+                            <comment>Número de acordo com o formato do peso selecionado.</comment>
+                        </wrapper_weight>
                         <allowed_methods translate="label">
                             <label>Allowed Methods</label>
                             <frontend_type>multiselect</frontend_type>
