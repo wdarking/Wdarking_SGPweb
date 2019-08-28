@@ -40,7 +40,7 @@ class Wdarking_SGPweb_Model_Carrier extends Mage_Shipping_Model_Carrier_Abstract
         $methods = array();
         $options = Mage::getSingleton('sgpweb/source_carrierMethods')->getAllOptions();
         foreach ($options as $option) {
-            $methods["{$this->getCarrierCode()}_{$option['value']}"] = $option['label'];
+            $methods[$option['value']] = $option['label'];
         }
         return $methods;
     }
@@ -63,8 +63,14 @@ class Wdarking_SGPweb_Model_Carrier extends Mage_Shipping_Model_Carrier_Abstract
                 $rate = Mage::getModel('shipping/rate_result_method');
                 $rate->setCarrier($this->getCarrierCode());
                 $rate->setCarrierTitle($this->getConfigData('title'));
-                $rate->setMethod("{$this->getCarrierCode()}_{$method['Codigo']}");
-                $rate->setMethodTitle($this->helper()->getSgpMethodTitle($method));
+                $rate->setMethod($method['Codigo']);
+                $rate->setMethodTitle(
+                    Mage::helper('sgpweb')->__(
+                        '%s - Em média %d dias.',
+                        $this->helper()->getSgpMethodTitle($method['Codigo']),
+                        (int)$method['PrazoEntrega']
+                    )
+                );
                 $rate->setPrice($this->getFinalPriceWithHandlingFee(str_replace(',', '.', $method['Valor'])));
                 $rate->setCost(str_replace(',', '.', $method['Valor']));
                 $result->append($rate);

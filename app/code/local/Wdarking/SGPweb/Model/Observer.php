@@ -3,147 +3,118 @@ class Wdarking_SGPweb_Model_Observer
 {
 	public function salesOrderShipmentSaveBefore(Varien_Event_Observer $observer)
 	{
-        $helper = Mage::helper('sgpweb');
-
-        if (!$helper->isSgpEnabled()) {
+        if (!$this->helper()->isSgpEnabled()) {
             return;
         }
 
         $shipment = $observer->getShipment();
 
-        $order = $shipment->getOrder();
+        if ($shipment->isObjectNew()) {
 
-        $observerFlag = "wdk_sgp_order_shipment_flag:{$order->getId()}";
+            $plp = Mage::getModel('sgpweb/sgpplp');
 
-        if (Mage::registry($observerFlag)) {
-            return;
+            $order = $shipment->getOrder();
+
+            $plp->setOrderId($shipment->getOrderId());
+            $plp->setIncrementOrderId($order->getIncrementId());
+
+            $plp->setShippingCarrier($order->getShippingMethod(true)->getCarrierCode());
+            $plp->setShippingMethod($order->getShippingMethod(true)->getMethod());
+
+            $plp->setReceiverName($order->getShippingAddress()->getName());
+            $plp->setReceiverAddress($order->getShippingAddress()->getStreetFull());
+
+            if ($response = $this->createShipment($order)) {
+                if (isset($response['retorno'], $response['retorno']['objetos'], $response['retorno']['objetos'][0])) {
+                    $object = $response['retorno']['objetos'][0];
+                    $plp->setTrackId($object['objeto']);
+                    $plp->setSgpService($this->helper()->getSgpMethodTitle($object['servico_correios']));
+                }
+            }
+
+            $plp->setCreatedAt(time());
+            $plp->setUpdatedAt(time());
+            $plp->save();
+
+            if ($trackId = $plp->getTrackId()) {
+                $track = Mage::getModel('sales/order_shipment_track')
+                    ->setNumber($trackId)
+                    ->setCarrierCode($plp->getShippingCarrier())
+                    ->setTitle("SGPweb: via {$plp->getShippingMethod()}");
+
+                $shipment->addTrack($track);
+
+                $shipment->sendEmail();
+            }
         }
+	}
 
-        Mage::register($observerFlag, 1);
+    public function createShipment($order)
+    {
+        Mage::log("Wdarking_SGPweb_Model_Observer::createShipment");
 
-        $shippingAddress = $order->getShippingAddress();
-        $shippingMethod = $order->getShippingMethod();
-
-        $sgpMethod = $helper->parseSgpMethod($shippingMethod);
+        $sgpMethod = $this->getSgpMethod($order->getShippingMethod(true));
 
         if (!$sgpMethod) {
-            Mage::log("{$shippingMethod} not in sgp remapped methods");
-            return;
+            return false;
         }
 
-        $data = [
-            'destinatario' => $shippingAddress->getName(),
-            'endereco' => $shippingAddress->getStreet(1),
-            'numero' => $shippingAddress->getStreet(2),
-            'bairro' => $shippingAddress->getStreet(3),
-            'complemento' => $shippingAddress->getStreet(4),
-            'cep' => $shippingAddress->getPostcode(),
-            'email' => $shippingAddress->getEmail(),
+        $data = ['objetos' => []];
+
+        $object = [
+            'destinatario' => $order->getShippingAddress()->getName(),
+            'endereco' => $order->getShippingAddress()->getStreet(1),
+            'numero' => $order->getShippingAddress()->getStreet(2),
+            'bairro' => $order->getShippingAddress()->getStreet(3),
+            'complemento' => $order->getShippingAddress()->getStreet(4),
+            'cep' => $order->getShippingAddress()->getPostcode(),
+            'email' => $order->getShippingAddress()->getEmail(),
             'servico_correios' => $sgpMethod,
             'tipo' => 1, // pacote
             'monitorar' => 1
         ];
 
-        if ($phone = $shippingAddress->getTelephone()) {
-            $data['telefone'] = $phone;
+        if ($phone = $order->getShippingAddress()->getTelephone()) {
+            $object['telefone'] = $phone;
         }
 
-        Mage::log($data);
+        array_push($data['objetos'], $object);
 
-        $sgpToken = $helper->getSgpToken();
-
-        $response = null;
         try {
-            $response = $this->post($data, $sgpToken);
+
+            $sgp = new Wdarking_SGPweb_Model_Sgp(['token' => $this->helper()->getSgpToken()]);
+
+            Mage::log($data);
+
+            $response = $sgp->createShipment($data);
+
+            Mage::log($response);
+
         } catch (Exception $e) {
             Mage::log($e->getMessage());
-            Mage::getSingleton('core/session')->addNotice('Problema na requisição para o SGPweb: ' . $e->getMessage());
+            Mage::getSingleton('core/session')->addError('Problema na requisição para o SGPweb: ' . $e->getMessage());
         }
 
-        if ($response) {
-            $responseObject = json_decode($response);
-            Mage::log($responseObject);
+        return $response;
+    }
 
-            if (!$responseObject || !$responseObject->retorno) {
-                Mage::getSingleton('core/session')->addNotice('Problema no retorno do SGPweb: sem `retorno`');
-                return;
-            }
-
-            $data = $responseObject->retorno;
-
-            if (!$data->objetos || count($data->objetos) < 1) {
-                $message = "Problema no retorno do SGPweb: ";
-                $message .= "[ {$data->status_processamento} ] {$data->status}";
-                Mage::getSingleton('core/session')->addNotice($message);
-                return;
-            }
-
-            $sgpObject = $data->objetos[0];
-
-            if (!$sgpObject->objeto) {
-                Mage::getSingleton('core/session')->addNotice('Problema no retorno do SGPweb: objeto sem rastreio');
-                return;
-            }
-
-            $track = Mage::getModel('sales/order_shipment_track')
-                ->setNumber($sgpObject->objeto)
-                ->setCarrierCode($shippingMethod)
-                ->setTitle("SGPweb rastreio para {$sgpObject->servico_correios} - {$shippingMethod}");
-
-            $shipment->addTrack($track);
-        }
-	}
-
-    public function post($data, $token)
+    public function getSgpMethod(Varien_Object $shipment)
     {
-        if (!$token) {
-            throw new \Exception("Error Processing Request: undefined sgp token", 1);
+        Mage::log("Wdarking_SGPweb_Model_Observer::getSgpMethod");
+
+        $method = $shipment->getMethod();
+
+        Mage::log($method);
+
+        if (strpos($method, 'sgpweb_') > -1) {
+            return explode('_', $method)[1];
         }
 
-        $url = "https://www.sgpweb.com.br/novo/api/pre-postagem?chave_integracao={$token}";
+        return $this->helper()->parseSgpMethod($shipment->getMethod());
+    }
 
-        //Initiate cURL.
-        $ch = curl_init($url);
-
-        //The JSON data.
-        $jsonData = json_encode($data);
-
-        //Encode the array into JSON.
-        $jsonDataEncoded = "{ \"objetos\": [{$jsonData}] }";
-
-        // 10 seconds start connection
-        curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 10);
-
-        // 10 seconds to execution
-        curl_setopt($ch, CURLOPT_TIMEOUT, 10);
-
-        //Tell cURL that we want to send a POST request.
-        curl_setopt($ch, CURLOPT_POST, 1);
-
-        //Attach our encoded JSON string to the POST fields.
-        curl_setopt($ch, CURLOPT_POSTFIELDS, $jsonDataEncoded);
-
-        //Set the content type to application/json
-        curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/json'));
-
-        //Tell cURL that we want to send a POST request.
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-
-        //Execute the request
-        $result = curl_exec($ch);
-
-        if($result === false) {
-            throw new \Exception("Error Processing Request: ".curl_errno($ch), 1);
-        }
-
-        $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-
-        if ($httpCode >= 300) {
-            throw new \Exception("Error Processing Request: unexpected response code {$httpCode}", 1);
-        }
-
-        curl_close($ch);
-
-        return $result;
+    public function helper()
+    {
+        return Mage::helper('sgpweb');
     }
 }

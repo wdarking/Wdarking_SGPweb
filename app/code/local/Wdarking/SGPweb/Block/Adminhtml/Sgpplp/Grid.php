@@ -48,6 +48,11 @@ class Wdarking_SGPweb_Block_Adminhtml_Sgpplp_Grid extends Mage_Adminhtml_Block_W
 				"index" => "shipping_method",
 				));
 
+				$this->addColumn("sgp_service", array(
+				"header" => Mage::helper("sgpweb")->__("SGP Service"),
+				"index" => "sgp_service",
+				));
+
 				$this->addColumn("receiver_name", array(
 				"header" => Mage::helper("sgpweb")->__("Receiver Name"),
 				"index" => "receiver_name",

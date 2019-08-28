@@ -42,4 +42,15 @@ class Wdarking_SGPweb_Model_Source_CarrierMethods
     {
         return self::toOptionArray();
     }
+
+    public function simpleArray()
+    {
+        $methods = [];
+
+        foreach ($this->toOptionArray() as $method) {
+            $methods[$method['value']] = $method['label'];
+        }
+
+        return $methods;
+    }
 }
