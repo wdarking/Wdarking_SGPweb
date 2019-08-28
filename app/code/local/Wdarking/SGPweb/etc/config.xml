@@ -133,6 +133,15 @@
                 </args>
             </sgpweb>
         </routers>
+        <translate>
+            <modules>
+                <Wdarking_SGPweb>
+                    <files>
+                        <default>Wdarking_SGPweb.csv</default>
+                    </files>
+                </Wdarking_SGPweb>
+            </modules>
+        </translate>
     </frontend>
     <crontab>
         <jobs>
