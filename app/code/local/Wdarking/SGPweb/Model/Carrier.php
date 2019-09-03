@@ -60,6 +60,9 @@ class Wdarking_SGPweb_Model_Carrier extends Mage_Shipping_Model_Carrier_Abstract
             $result->append($rate);
         } else {
             foreach ($methods as $method) {
+                if (strlen($method['MsgErro']) > 0) {
+                    continue;
+                }
                 $rate = Mage::getModel('shipping/rate_result_method');
                 $rate->setCarrier($this->getCarrierCode());
                 $rate->setCarrierTitle($this->getConfigData('title'));
