@@ -15,6 +15,11 @@ class Wdarking_SGPweb_Model_Observer
 
             $order = $shipment->getOrder();
 
+            if ($this->helper()->skipCreateShipment($order)) {
+                Mage::log("Shipment request skiped");
+                return;
+            }
+
             $plp->setOrderId($shipment->getOrderId());
             $plp->setIncrementOrderId($order->getIncrementId());
 

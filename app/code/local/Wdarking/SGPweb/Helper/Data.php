@@ -66,4 +66,34 @@ class Wdarking_SGPweb_Helper_Data extends Mage_Core_Helper_Abstract
 
         return $name;
     }
+
+    public function skipCreateShipment($order)
+    {
+        $skipMode = Mage::getStoreConfig('wdarking_sgpweb/wdk_sgpweb_config/wdk_sgpweb_skipoption');
+
+        $skipProduct = Mage::getStoreConfig('wdarking_sgpweb/wdk_sgpweb_config/wdk_sgpweb_skipitem');
+
+        $orderItems = $order->getAllVisibleItems();
+        Mage::log('count: ', count($orderItems));
+
+        if ($skipMode == Wdarking_SGPweb_Model_Source_SkipOption::UNIQUE && count($orderItems) === 1) {
+            Mage::log("Wdarking_SGPweb_Helper_Data::skipCreateShipment -> skip unique");
+            foreach ($orderItems as $item) {
+                if (strpos($skipProduct, $item->getSku()) > -1) {
+                    return true;
+                }
+            }
+        }
+
+        if ($skipMode == Wdarking_SGPweb_Model_Source_SkipOption::INCLUDING) {
+            Mage::log("Wdarking_SGPweb_Helper_Data::skipCreateShipment -> skip including");
+            foreach ($orderItems as $item) {
+                if (strpos($skipProduct, $item->getSku()) > -1) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
 }
