@@ -31,10 +31,10 @@ class Wdarking_SGPweb_Model_Observer
 
             if ($response = $this->createShipment($order)) {
                 if (isset($response['retorno'], $response['retorno']['objetos'], $response['retorno']['objetos'][0])) {
+                    $object = $response['retorno']['objetos'][0];
                     if ($response['retorno']['status_processamento'] !== 1) {
                         Mage::throwException(Mage::helper('adminhtml')->__('Problema ao gerar rastreio no SGPweb: ' . $object['erros']));
                     }
-                    $object = $response['retorno']['objetos'][0];
                     if (isset($object['objeto'])) {
                         $plp->setTrackId($object['objeto']);
                         $plp->setSgpService($this->helper()->getSgpMethodTitle($object['servico_correios']));
