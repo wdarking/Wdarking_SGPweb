@@ -78,13 +78,17 @@ class Wdarking_SGPweb_Model_Observer
             'endereco' => $order->getShippingAddress()->getStreet(1),
             'numero' => $order->getShippingAddress()->getStreet(2),
             'bairro' => $order->getShippingAddress()->getStreet(3),
-            'complemento' => $order->getShippingAddress()->getStreet(4),
+            'complemento' => '-',
             'cep' => $order->getShippingAddress()->getPostcode(),
             'email' => $order->getShippingAddress()->getEmail(),
             'servico_correios' => $sgpMethod,
             'tipo' => 1, // pacote
             'monitorar' => 1
         ];
+
+        if (strlen($order->getShippingAddress()->getStreet(4)) > 0) {
+            $object['complemento'] = $order->getShippingAddress()->getStreet(4);
+        }
 
         if ($phone = $order->getShippingAddress()->getTelephone()) {
             $object['telefone'] = $phone;
